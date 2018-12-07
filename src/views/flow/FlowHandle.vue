@@ -205,72 +205,17 @@
     beforeRouteEnter(to, from, next) {
       var reg = new RegExp('(^|&)' + 'zin' + '=([^&]*)(&|$)');
       var r = window.location.search.substr(1).match(reg);
-      if (r !== null) {
-        dingUser.getRequestAuthCode(window.location.href).then((data) => {
-          api.getLogin(data, function (res) {
-            if (res.data.code) {
-              if (!(from.path.indexOf('/flowIdea') >= 0) && !(from.path.indexOf('/flowDetails') >= 0) && !(from.path.indexOf('/flowEdit') >= 0) && !(from.path.indexOf('/flowPdf') >= 0)) { // 只有在列表进来的时候才会判断此流程是否有效，为了防止从flowIdea, flowDetails页面返回到此页的多余判断
-                whole.busy()
-                api.getHandleInfo(to.query.flowParams, function (res) {
-                  whole.leave()
-                  if (res.data && (typeof res.data === 'string') && res.data.indexOf('<!DOCTYPE html>') >= 0) {
-                    //  如果该任务已经办理完毕，需要读取待办列表是否还有任务
-                    flowRU.getDBList(function (res) {
-                      let dd = window.dd
-                      if (res.page.count > 0) {
-                        dd.device.notification.confirm({
-                          message: '没有相应的任务,该任务可能已办理完,请选择',
-                          title: '提示',
-                          buttonLabels: ['待办列表', '下一条'], // , '返回上层'
-                          onSuccess: function (result) {
-                            if (result.buttonIndex === 0) {
-                              let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
-                              window.location.href = 'dingtalk://dingtalkclient/page/link?url=' + encodeURI('https://dingtalk.gmkholdings.com?dingtalk_code=' + dingtalkCode + '&lzlindex=1')
-                            } else if (result.buttonIndex === 1) {
-                              let flowParams = flowGLU.getList(res.page.list[res.page.count - 1], 'db');
-                              let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
-                              dd.biz.util.openLink({
-                                url: encodeURI('https://dingtalk.gmkholdings.com/flowHandle?zin=abc&dingtalk_code=' + dingtalkCode + '&flowParams=' + JSON.stringify(flowParams)), // 要打开链接的地址
-                                onSuccess: function (result) {
-                                  //  跳转至下一条待办后，需要关闭当前窗口
-                                  dd.biz.navigation.close({
-                                    onSuccess: function (result) {
-                                    },
-                                    onFail: function (err) {
-                                    }
-                                  })
-                                },
-                                onFail: function (err) {
-                                }
-                              })
-                            }
-                          },
-                          onFail: function (err) {
-                          }
-                        })
-                      } else {
-                        dd.device.notification.alert({
-                          message: '该任务已办理，待办列表已无待办，请确认退出',
-                          title: '提示',  //  可传空
-                          buttonName: '退出',
-                          onSuccess: function() {
-                            setTimeout(function () {
-                              dd.biz.navigation.close({
-                                onSuccess: function (result) {
-                                },
-                                onFail: function (err) {
-                                }
-                              })
-                            }, 1500)
-                          },
-                          onFail: function(err) {}
-                        });
-                      }
-                    })
-                    return
-                  }
-                  if (flowRU.doViewResponse(res.data)) {
-                    if (!res.data.flag) {
+      if (!(from.path.indexOf('/flowIdea') >= 0) && !(from.path.indexOf('/flowDetails') >= 0) && !(from.path.indexOf('/flowEdit') >= 0) && !(from.path.indexOf('/flowPdf') >= 0)) {
+        if (r !== null) {
+          dingUser.getRequestAuthCode(window.location.href).then((data) => {
+            api.getLogin(data, function (res) {
+              if (res.data.code) {
+                if (!(from.path.indexOf('/flowIdea') >= 0) && !(from.path.indexOf('/flowDetails') >= 0) && !(from.path.indexOf('/flowEdit') >= 0) && !(from.path.indexOf('/flowPdf') >= 0)) { // 只有在列表进来的时候才会判断此流程是否有效，为了防止从flowIdea, flowDetails页面返回到此页的多余判断
+                  whole.busy()
+                  api.getHandleInfo(to.query.flowParams, function (res) {
+                    whole.leave()
+                    if (res.data && (typeof res.data === 'string') && res.data.indexOf('<!DOCTYPE html>') >= 0) {
+                      //  如果该任务已经办理完毕，需要读取待办列表是否还有任务
                       flowRU.getDBList(function (res) {
                         let dd = window.dd
                         if (res.page.count > 0) {
@@ -283,8 +228,8 @@
                                 let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
                                 window.location.href = 'dingtalk://dingtalkclient/page/link?url=' + encodeURI('https://dingtalk.gmkholdings.com?dingtalk_code=' + dingtalkCode + '&lzlindex=1')
                               } else if (result.buttonIndex === 1) {
-                                let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
                                 let flowParams = flowGLU.getList(res.page.list[res.page.count - 1], 'db');
+                                let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
                                 dd.biz.util.openLink({
                                   url: encodeURI('https://dingtalk.gmkholdings.com/flowHandle?zin=abc&dingtalk_code=' + dingtalkCode + '&flowParams=' + JSON.stringify(flowParams)), // 要打开链接的地址
                                   onSuccess: function (result) {
@@ -299,7 +244,6 @@
                                   onFail: function (err) {
                                   }
                                 })
-//                                router.push({path: '/flowHandletemp', query: {zin: '0', flowParams: JSON.stringify(flowParams)}})
                               }
                             },
                             onFail: function (err) {
@@ -323,39 +267,99 @@
                             onFail: function(err) {}
                           });
                         }
-                      });
-                    } else {
-                      next(vm => {
-                        vm._data.zin = r[2];
                       })
+                      return
                     }
-                  } else {
-                    next(false)
-                  }
-                })
+                    if (flowRU.doViewResponse(res.data)) {
+                      if (!res.data.flag) {
+                        flowRU.getDBList(function (res) {
+                          let dd = window.dd
+                          if (res.page.count > 0) {
+                            dd.device.notification.confirm({
+                              message: '没有相应的任务,该任务可能已办理完,请选择',
+                              title: '提示',
+                              buttonLabels: ['待办列表', '下一条'], // , '返回上层'
+                              onSuccess: function (result) {
+                                if (result.buttonIndex === 0) {
+                                  let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
+                                  window.location.href = 'dingtalk://dingtalkclient/page/link?url=' + encodeURI('https://dingtalk.gmkholdings.com?dingtalk_code=' + dingtalkCode + '&lzlindex=1')
+                                } else if (result.buttonIndex === 1) {
+                                  let dingtalkCode = ding.parseParam(window.location.href, 'dingtalk_code') || 'APPSERVER'
+                                  let flowParams = flowGLU.getList(res.page.list[res.page.count - 1], 'db');
+                                  dd.biz.util.openLink({
+                                    url: encodeURI('https://dingtalk.gmkholdings.com/flowHandle?zin=abc&dingtalk_code=' + dingtalkCode + '&flowParams=' + JSON.stringify(flowParams)), // 要打开链接的地址
+                                    onSuccess: function (result) {
+                                      //  跳转至下一条待办后，需要关闭当前窗口
+                                      dd.biz.navigation.close({
+                                        onSuccess: function (result) {
+                                        },
+                                        onFail: function (err) {
+                                        }
+                                      })
+                                    },
+                                    onFail: function (err) {
+                                    }
+                                  })
+//                                router.push({path: '/flowHandletemp', query: {zin: '0', flowParams: JSON.stringify(flowParams)}})
+                                }
+                              },
+                              onFail: function (err) {
+                              }
+                            })
+                          } else {
+                            dd.device.notification.alert({
+                              message: '该任务已办理，待办列表已无待办，请确认退出',
+                              title: '提示',  //  可传空
+                              buttonName: '退出',
+                              onSuccess: function() {
+                                setTimeout(function () {
+                                  dd.biz.navigation.close({
+                                    onSuccess: function (result) {
+                                    },
+                                    onFail: function (err) {
+                                    }
+                                  })
+                                }, 1500)
+                              },
+                              onFail: function(err) {}
+                            });
+                          }
+                        });
+                      } else {
+                        next(vm => {
+                          vm._data.zin = r[2];
+                        })
+                      }
+                    } else {
+                      next(false)
+                    }
+                  })
+                } else {
+                  next()
+                }
+              } else {
+                whole.showTop('获取钉钉免登权限失败')
+                next(false)
+              }
+            })
+          })
+        } else {
+          if (!(from.path.indexOf('/flowIdea') >= 0) && !(from.path.indexOf('/flowDetails') >= 0) && !(from.path.indexOf('/flowEdit') >= 0) && !(from.path.indexOf('/flowPdf') >= 0)) { // 只有在列表进来的时候才会判断此流程是否有效，为了防止从flowIdea, flowDetails页面返回到此页的多余判断
+            whole.busy()
+            api.getHandleInfo(to.query.flowParams, function (res) {
+              whole.leave()
+              if (flowRU.doViewResponse(res.data)) {
+                next()
               } else {
                 next()
               }
-            } else {
-              whole.showTop('获取钉钉免登权限失败')
-              next(false)
-            }
-          })
-        })
-      } else {
-        if (!(from.path.indexOf('/flowIdea') >= 0) && !(from.path.indexOf('/flowDetails') >= 0) && !(from.path.indexOf('/flowEdit') >= 0) && !(from.path.indexOf('/flowPdf') >= 0)) { // 只有在列表进来的时候才会判断此流程是否有效，为了防止从flowIdea, flowDetails页面返回到此页的多余判断
-          whole.busy()
-          api.getHandleInfo(to.query.flowParams, function (res) {
-            whole.leave()
-            if (flowRU.doViewResponse(res.data)) {
-              next()
-            } else {
-              next(false)
-            }
-          });
-        } else {
-          next()
+            });
+          } else {
+            next()
+          }
         }
+      } else {
+        next()
       }
     },
     created() {

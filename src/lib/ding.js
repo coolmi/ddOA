@@ -24,10 +24,8 @@ const NOREFRESH = [];
 const RIGHT_TOP_TITLE = '帮助'; // 页面右上角的名称
 
 const GMK_LZL = '094211534726242584'  //  李振龙ddid
-const GMK_ZBM = '094345602424062002'  //  张保敏 ddid
 const GMK_GJH = '051448223438009854'  //  gjh ddid
 const GMK_LZH = '3001136920996174'  //  刘战华 ddid
-const GMK_CXN = '1962122737810613'  //  晓楠 ddid
 const GMK_XCM = '131509693424719696'  //  徐长孟 ddid
 const GMK_ZYM = '154262480124247593'  //  张月民 ddid
 const GMK_LHH = '045643174726213386'  //  李恒虎 ddid
@@ -219,8 +217,6 @@ export default {
   RIGHT_TOP_TITLE,
   GMK_GJH,
   GMK_LZL,
-  GMK_ZBM,         // 保敏
-  GMK_CXN,         // 晓楠
   GMK_XCM,         // 长孟
   GMK_ZYM,  // 月民
   GMK_LZH,    // 刘占华
