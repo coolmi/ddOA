@@ -15,8 +15,8 @@
       <group gutter="0" label-width="18rem" v-if="(flowType === 0 || flowType === '0') && dbList.length > 0">
         <!--待办 | getDateDiff-->
         <cell v-for="(item, index) in dbList" :key="index"
-              v-if="(item.ishidden === '0' || item.ISHIDDEN === 0) && dbList.length > 0"
-              :title="item.mytitle ? (item.mytitle || item.MYTITLE) : ((item.START_USER_NAME || item.start_user_name) + '发起了' + (item.NAME_ || item.name_) + ',请办理!')"
+              v-if="(item.ishidden === '0' || item.ISHIDDEN === 0 || !item.ishidden) && dbList.length > 0"
+              :title="(item.START_USER_NAME || item.start_user_name) + '发起了' + (item.NAME_ || item.name_) + ',请办理!'"
               :inline-desc="item.START_TIME_ || item.start_time | getLastTimeStr"
               @click.native="toFlowView(item, 'db')">
           <img slot="icon" width="35" height="35" v-if="item.avatar" class="cellImg"
