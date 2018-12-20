@@ -621,6 +621,62 @@ export default {
     })
   },
   /**
+   * 获取考勤信息
+   * @param  {[type]}   params [参数]
+   * @param  {Function} cb     [返回数据]
+   * @return {[type]}          [description]
+   */
+  getKaoQinURL: function (holidaytype, sdate, edate, cb) {
+    axios.get('authapi/newleave/getkqbcgaiainfo?pernr=&holidaytype=' + holidaytype + '&sdate=' + sdate + '&edate=' + edate)
+      .then((res) => {
+        cb(res);
+      }).catch((error) => {
+      return Promise.reject(error)
+    })
+  },
+  /**
+   * 获取病假累计休假天数
+   * @param  {[type]}   params [参数]
+   * @param  {Function} cb     [返回数据]
+   * @return {[type]}          [description]
+   */
+  getYxljts: function (holidaytype, cb) {
+    axios.get('authapi/newleave/json/getljalreadybjts?pernr=&holidaytype=' + holidaytype)
+      .then((res) => {
+        cb(res);
+      }).catch((error) => {
+      return Promise.reject(error)
+    })
+  },
+  /**
+   * 获取病假运行中天数
+   * @param  {[type]}   params [参数]
+   * @param  {Function} cb     [返回数据]
+   * @return {[type]}          [description]
+   */
+  getYxzts: function (holidaytype, cb) {
+    axios.get('authapi/newleave/json/getljrunbjts?pernr=&id=-1&holidaytype=' + holidaytype)
+      .then((res) => {
+        cb(res);
+      }).catch((error) => {
+      return Promise.reject(error)
+    })
+  },
+  /**
+   * 获取ltype,判断股份和新凤祥的休假页面识别
+   * @param  {[type]}   params [参数]
+   * @param  {Function} cb     [返回数据]
+   * @return {[type]}          [description]
+   */
+  getltype: function (cb) {
+    axios.get('authapi/newleave/json/getltypeByloginName?loginame=')
+      .then((res) => {
+        cb(res);
+      }).catch((error) => {
+      return Promise.reject(error)
+    })
+  },
+  /**
    * 获取休假天数
    * @param  {[type]}   params [参数]
    * @param  {Function} cb     [返回数据]
