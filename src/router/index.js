@@ -29,9 +29,34 @@ const router = new Router({
       meta: {title: '申请保存列表'}
     },
     {
+      path: '/newLeaveGaia',
+      component: require('@/views/newLeaveGaia/newLeaveGaia'),
+      meta: {title: '员工休假申请(股份)'}
+    },
+    {
+      path: '/exanInfo',
+      component: require('@/views/newLeaveGaia/exanInfo'),
+      meta: {title: '考勤信息表单'}
+    },
+    {
+      path: '/handover',
+      component: require('@/views/newLeaveGaia/handover'),
+      meta: {title: '工作交接表单'}
+    },
+    {
+      path: '/authorization',
+      component: require('@/views/newLeaveGaia/authorization'),
+      meta: {title: '工作授权表单'}
+    },
+    {
       path: '/newLeave',
+      component: require('@/views/newLeaveGaia/turnToPage'),
+      meta: {title: '请刷新,玩命加载中...'}
+    },
+    {
+      path: '/newLeavexfx',
       component: require('@/views/newleave/NewLeave'),
-      meta: {title: '员工休假申请'}
+      meta: {title: '员工休假申请(新凤祥)'}
     },
     {
       path: '/accredit',
