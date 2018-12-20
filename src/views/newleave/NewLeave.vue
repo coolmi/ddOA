@@ -34,7 +34,7 @@
 
 
       <!--<x-input :readonly="true" v-model="forms.thisdays" title="休假天数"></x-input>-->
-      <cell title="休假天数" v-show="thisdayscount" readonly>{{forms.thisdays}}</cell>
+      <cell title="休假天数" v-show="thisdayscount" :readonly="xjtsFlag">{{forms.thisdays}}</cell>
       <cell title="休假时数" v-show="showbrbu" v-model="forms.thishours"></cell>
 
       <cell title="剩余额度(时)" v-show="isshownj" v-model="forms.surplus"></cell>
@@ -131,12 +131,14 @@
     },
     data() {
       return {
+        xjtsFlag: true,
         showCon: false,
         showbrjflag: '',
         btnshow1flag: '',
         btnshow2flag: '',
         forms: {
           // postid: '',
+          ltype: '',
           sdate: '',
           edate: '',
           timea: '',
@@ -202,9 +204,11 @@
       },
       thisdayscount: function () {
         let _that = this;
-        if ((this.forms.holidaytype !== 'A02' && this.forms.holidaytype !== 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && (this.forms.dutya !== '' || this.forms.dutyb !== '')) ||
+        if (
+          ((this.forms.holidaytype !== 'A02' && this.forms.holidaytype !== 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && (this.forms.dutya !== '' || this.forms.dutyb !== '')) ||
           (this.forms.holidaytype === 'A02' && this.forms.sdate !== '' && this.forms.edate !== '' && (this.forms.dutya !== '' || this.forms.dutyb !== '' || this.forms.dutya === '' || this.forms.dutyb === '')) ||
-          (this.forms.holidaytype === 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && this.forms.timea !== '' && this.forms.timeb !== '')) {
+          (this.forms.holidaytype === 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && this.forms.timea !== '' && this.forms.timeb !== '')) &&
+         (this.forms.ltype === '3' && this.forms.thisdays !== '' || this.forms.ltype !== '3')) {
           let params = {
             mainModel: this.forms
           }
@@ -410,6 +414,10 @@
     },
     created() {
       let _that = this
+      this.forms.ltype = this.$route.query.obj
+      if (this.ltype === '3') {
+        this.xjtsFlag = false
+      }
       dingUser.getRequestAuthCode(this.path).then((data) => {
         api.getLogin(data, function (res) {
           if (res.data.code) {
