@@ -34,7 +34,7 @@
 
 
       <!--<x-input :readonly="true" v-model="forms.thisdays" title="休假天数"></x-input>-->
-      <cell title="休假天数" v-show="thisdayscount" :readonly="xjtsFlag">{{forms.thisdays}}</cell>
+      <x-input title="休假天数" @on-blur="getJK" v-show="thisdayscount" :disabled="xjtsFlag" v-model="forms.thisdays"></x-input>
       <cell title="休假时数" v-show="showbrbu" v-model="forms.thishours"></cell>
 
       <cell title="剩余额度(时)" v-show="isshownj" v-model="forms.surplus"></cell>
@@ -129,6 +129,15 @@
       XInput,
       Confirm
     },
+    watch: {
+      'forms.holidaytype': function (val) {
+        if (this.forms.ltype === '3' && (this.forms.holidaytype === 'J01' || this.forms.holidaytype === 'A08' || this.forms.holidaytype === 'A05')) {
+          this.xjtsFlag = false
+        } else {
+          this.xjtsFlag = true
+        }
+      }
+    },
     data() {
       return {
         xjtsFlag: true,
@@ -204,11 +213,13 @@
       },
       thisdayscount: function () {
         let _that = this;
-        if (
+        if (this.forms.ltype === '3') {
+          return true
+        } else if (
           ((this.forms.holidaytype !== 'A02' && this.forms.holidaytype !== 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && (this.forms.dutya !== '' || this.forms.dutyb !== '')) ||
           (this.forms.holidaytype === 'A02' && this.forms.sdate !== '' && this.forms.edate !== '' && (this.forms.dutya !== '' || this.forms.dutyb !== '' || this.forms.dutya === '' || this.forms.dutyb === '')) ||
-          (this.forms.holidaytype === 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && this.forms.timea !== '' && this.forms.timeb !== '')) &&
-         (this.forms.ltype === '3' && this.forms.thisdays !== '' || this.forms.ltype !== '3')) {
+          (this.forms.holidaytype === 'A11' && this.forms.sdate !== '' && this.forms.edate !== '' && this.forms.timea !== '' && this.forms.timeb !== ''))
+         ) {
           let params = {
             mainModel: this.forms
           }
@@ -415,9 +426,6 @@
     created() {
       let _that = this
       this.forms.ltype = this.$route.query.obj
-      if (this.ltype === '3') {
-        this.xjtsFlag = false
-      }
       dingUser.getRequestAuthCode(this.path).then((data) => {
         api.getLogin(data, function (res) {
           if (res.data.code) {
@@ -436,6 +444,37 @@
       // alert(JSON.stringify(_that.formData))
     },
     methods: {
+      getJK(value) {
+        let _that = this
+        this.forms.thisdays = value
+        let params = {
+          mainModel: this.forms
+        }
+        api.getKqbcURL(params, function (res) {
+          if (res.data.code) {
+            console.log('计算fdfdf:')
+            console.log(res)
+            _that.forms.thisdays = res.data.data.thisdays
+            _that.forms.comdays = res.data.data.comdays
+            _that.forms.thishours = res.data.data.thishours
+            _that.forms.surplus = res.data.data.yuedays
+            _that.forms.enjoy = res.data.data.vacdays
+            _that.forms.hasuse = res.data.data.usedays
+            _that.forms.suebreak = res.data.data.ltypek
+            // _that.forms.effecta = res.data.data.effs
+            // _that.forms.effectb = res.data.data.effe
+            _that.forms.ctxts = res.data.data.ctxts
+            _that.forms.ctxxss = res.data.data.ctxxss
+            _that.forms.ctxnjts = res.data.data.ctxnjts
+            _that.forms.ljsjtsy = res.data.data.ljsjtsy
+            _that.forms.ljsjtsm = res.data.data.ljsjtsm
+            if (res.data.data.error !== '' && res.data.data.error !== undefined) {
+              console.log(res.data.data.error)
+              whole.showTop(res.data.data.error)
+            }
+          }
+        })
+      },
       getBaseData() {
         let _that = this;
         api.getLeaveTypeListURL(function (res) {
