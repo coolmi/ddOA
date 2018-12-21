@@ -159,8 +159,11 @@
 //        this.selectedIndex = 2
 //      }
       let _that = this;
+      let dd = window.dd
+      dd.ui.webViewBounce.enable()
       this.$navigation.on('back', (to, from) => {
         if (to.route.path === '/') {
+          dd.ui.webViewBounce.enable()
           _that.getUserid();
           _that.pageNo = 1;
           _that.doNext(_that.index)

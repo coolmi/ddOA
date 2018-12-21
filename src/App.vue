@@ -183,7 +183,6 @@
     created() {
       this.setRight();
       let dd = window.dd
-      dd.ui.webViewBounce.disable()
       let _that = this;
       dd.ready(function () {
         dd.biz.user.get({

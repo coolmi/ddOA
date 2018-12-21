@@ -258,6 +258,8 @@
     },
     created() {
 //      this.setRightMenu();
+      let dd = window.dd
+      dd.ui.webViewBounce.disable()
       let flowParams = JSON.parse(this.$route.query.flowParams);
       this.flowParams = flowParams;
       this.getRouteHandleInfo(this.flowParams)
