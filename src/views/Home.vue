@@ -154,10 +154,12 @@
       }
     },
     created() {
-//      let lzlindex = ding.parseParam(window.location.href, 'lzlindex') || ''
-//      if (lzlindex !== '') {
-//        this.selectedIndex = 2
-//      }
+      let itemIndex = ding.parseParam(window.location.href, 'itemIndex') || ''
+      if (itemIndex === 'sqz') {
+        this.selectedIndex = 1
+      } else if (itemIndex === 'dbrw') {
+        this.selectedIndex = 0
+      }
       let _that = this;
       let dd = window.dd
       dd.ui.webViewBounce.enable()
