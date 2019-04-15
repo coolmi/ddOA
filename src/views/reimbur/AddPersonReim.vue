@@ -78,6 +78,7 @@
         <calendar v-model="formsData4.sdatem"  title="日期"></calendar>
         <v-search title="币种" :cdata="currencyList" v-model="formsData4.waersm" @on-hide="getProtypeInfo"></v-search>
         <x-input title="原币金额" v-if="currencyFlag === '1'" type="number" v-model="formsData4.wrbtrm"></x-input>
+        <x-input title="用餐人数"  v-model="formsData4.snum"></x-input>
         <cell v-show="originalCurrency4" v-if="currencyFlag === '1'">{{originalCurrency4}}</cell>
         <x-input title="汇率" v-if="currencyFlag === '1'" type="number" v-model="formsData4.kursfm"></x-input>
         <x-input title="总金额"  v-if="currencyFlag === '1'" readonly v-model="amount4" ></x-input>
@@ -319,6 +320,7 @@
         },
         formsData4: {
           stypem: '',
+          snum: '',
           colnrm: '',
           sdatem: '',
           waersm: 'CNY',
@@ -1897,6 +1899,10 @@
           whole.showTop('请选择餐费类型')
           return;
         }
+        if (this.formsData4.snum === '') {
+          whole.showTop('请填写用餐人数')
+          return;
+        }
         if (this.formsData4.sdatem.length === 0) {
           whole.showTop('请选择日期')
           return;
@@ -1931,6 +1937,7 @@
         let formsData = {
           type: '餐费',
           stypem: this.formsData4.stypem,
+          snum: this.formsData4.snum,
           sdatem: this.formsData4.sdatem,
           waersm: this.formsData4.waersm,
           wrbtrm: this.formsData4.wrbtrm || 0,

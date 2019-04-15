@@ -31,6 +31,7 @@ const GMK_ZYM = '154262480124247593'  //  张月民 ddid
 const GMK_LHH = '045643174726213386'  //  李恒虎 ddid
 const GMK_YF = '47412324667285'  //  俞芳 ddid
 const GMK_GZC = '052936314036407067'  //  郭宗春 ddid
+const GMK_ZYL = '215039072535587393'  //  赵彦玲 ddid
 const W3_CONCAT_DDID = '095117221320233106' // 明月的ddid
 const W3_YUNWEI_DDID = '131164676026354846' // 炳冉的ddid
 const JH_CONCAT_DDID = 'manager9648' // 京华世家任小冰的ddid
@@ -64,7 +65,7 @@ export function getLocation(key) {
   return localStorage.getItem(key) || 'APPSERVER';
 }
 
-export function alertInfo(mes, title = '提示', btnName = '确定') {
+export function alertInfo(mes, title = '提示', btnName = 'OK') {
   dd.ready(function () {
     dd.device.notification.alert({
       message: mes,
@@ -223,6 +224,7 @@ export default {
   GMK_LHH,   // 李恒虎
   GMK_YF,   // 俞芳
   GMK_GZC,   // 郭宗春
+  GMK_ZYL, // 赵彦玲
   W3_CONCAT_DDID,  //  明月
   W3_YUNWEI_DDID, //  炳冉
   JH_CONCAT_DDID,
