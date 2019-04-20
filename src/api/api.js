@@ -1226,5 +1226,14 @@ export default {
       }).catch((error) => {
         return Promise.reject(error)
     })
+  },
+  //  根据公司编号＆出行方式获取税率
+  getTaxrate: function (burks, taxtype, cb) {
+    axios.get('/authapi/ddtalkwf/taxrate?burks=' + burks + '&taxtype=' + taxtype)
+      .then((res) => {
+        cb(res);
+      }).catch((error) => {
+      return Promise.reject(error)
+    })
   }
 }

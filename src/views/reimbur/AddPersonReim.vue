@@ -21,7 +21,7 @@
         <cell title="请选择报销类型..."></cell>
       </group>
       <group v-if="checker === '1'" title="长途交通" labelWidth="6.5rem" labelMarginRight="1rem">
-        <v-search title="交通方式" :cdata="trafficWaysList" v-model="formsData1.stype"></v-search>
+        <v-search title="交通方式" :cdata="trafficWaysList" v-model="formsData1.stype" @on-hide="getshui(formsData1.stype)"></v-search>
         <v-search title="交通类型" :cdata="trafficTypeList" v-model="formsData1.mtype" @on-hide="getitemnoInfo()"></v-search>
         <calendar v-model="formsData1.sdate"  title="出发日期"></calendar>
         <calendar v-model="formsData1.edate"  title="到达日期"></calendar>
@@ -29,10 +29,16 @@
         <v-search title="到达地" :cdata="tripPlace" :columns="1" v-model="formsData1.eaddr" show-name></v-search>
         <v-search title="币种" :cdata="currencyList" v-model="formsData1.waers" @on-hide="getProtypeInfo"></v-search>
         <x-input title="原币金额" v-if="currencyFlag === '1'" type="number" v-model="formsData1.wrbtr"></x-input>
+        <x-input title="票价" type="number" v-model="formsData1.ticketPrice" v-show="formsData1.stype === '2001' || formsData1.stype === '2002'"></x-input>
+        <x-input title="机场建设费" type="number" v-model="formsData1.airportConstuFee" v-show="formsData1.stype === '2001' || formsData1.stype === '2002'"></x-input>
+        <x-input title="燃油附加费" type="number" v-model="formsData1.fuelSurch" v-show="formsData1.stype === '2001' || formsData1.stype === '2002'"></x-input>
+        <x-input title="其他税费" type="number" v-model="formsData1.otherTaxfee" v-show="formsData1.stype === '2001' || formsData1.stype === '2002'"></x-input>
         <cell v-show="originalCurrency1" v-if="currencyFlag === '1'">{{originalCurrency1}}</cell>
         <x-input title="汇率" v-if="currencyFlag === '1'" type="number" v-model="formsData1.kursf"></x-input>
-        <x-input title="金额"  v-if="currencyFlag === '1'" readonly v-model="amount" ></x-input>
-        <x-input title="金额" v-if="currencyFlag === '0'" type="number" v-model="formsData1.dmbtr" @on-blur="changeAmount"></x-input>
+        <selector title="税率" placeholder="请输入税率" :options="shuilvlist" v-model="formsData1.taxrate" v-show="formsData1.stype !== '2051'"></selector>
+        <x-input title="总金额"  v-if="currencyFlag === '1'" readonly v-model="amount" @on-blur="getmoney(amount)"></x-input>
+        <x-input title="总金额" v-if="currencyFlag === '0'" type="number" v-model="formsData1.dmbtr" @on-blur="changeAmount"></x-input>
+        <cell title="税额" type="number" v-model="formsData1.taxNumber" v-show="formsData1.stype !== '2051'"></cell>
         <!--<cell v-if="cbFlag === '1'"><font color="#FF0000">超额{{ulfee}}</font></cell>-->
         <v-search title="项目号" :cdata="colnrList" v-model="formsData1.colnr"></v-search>
         <x-input title="超标事由" v-if="cbFlag === '1'" v-model="formsData1.ulrea"></x-input>
@@ -41,7 +47,7 @@
       </group>
       <group v-if="checker === '2'" title="市内交通" labelWidth="6.5rem" labelMarginRight="1rem">
         <div>
-          <v-search title="交通方式" :cdata="trafficWaysList" v-model="formsData2.stypec"></v-search>
+          <v-search title="交通方式" :cdata="trafficWaysList" v-model="formsData2.stypec" @on-hide="getshui(formsData2.stypec)"></v-search>
           <v-search title="交通类型" :cdata="trafficTypeList" v-model="formsData2.mtypec" @on-hide="getitemnoInfo()"></v-search>
           <calendar v-model="formsData2.sdatec"  title="出发日期"></calendar>
           <v-search title="出发地" :cdata="tripPlace" :columns="1" v-model="formsData2.saddrc" show-name></v-search>
@@ -50,9 +56,11 @@
           <x-input title="原币金额" v-if="currencyFlag === '1'" type="number" v-model="formsData2.wrbtrc"></x-input>
           <cell v-show="originalCurrency2" v-if="currencyFlag === '1'">{{originalCurrency2}}</cell>
           <x-input title="汇率" v-if="currencyFlag === '1'" type="number" v-model="formsData2.kursfc"></x-input>
-          <x-input title="金额"  v-if="currencyFlag === '1'" readonly v-model="amount2" ></x-input>
-          <x-input title="金额" v-if="currencyFlag === '0'" type="number" v-model="formsData2.dmbtrc" @on-blur="changeAmountC"></x-input>
+          <selector title="税率" placeholder="请输入税率" :options="shuilvlist" v-model="formsData2.taxrate" v-show="formsData2.stypec === '4001'"></selector>
+          <x-input title="总金额"  v-if="currencyFlag === '1'" readonly v-model="amount2" @on-blur="getmoney(amount2)"></x-input>
+          <x-input title="总金额" v-if="currencyFlag === '0'" type="number" v-model="formsData2.dmbtrc" @on-blur="changeAmountC"></x-input>
           <cell v-if="cbFlag === '1'"><font color="#FF0000">超额{{ulfeec}}</font></cell>
+          <cell title="税额" type="number" v-model="formsData2.taxNumberc" v-show="formsData2.stypec === '4001'"></cell>
           <v-search title="项目号" :cdata="colnrList" v-model="formsData2.colnrc"></v-search>
           <x-input title="超标事由" v-if="cbFlag === '1'"  v-model="formsData2.ulreac"></x-input>
           <x-textarea title="说明"  v-model="formsData2.smemoc"  autosize></x-textarea>
@@ -259,6 +267,7 @@
           }
         ],
         date: '',
+        shuilvlist: [],
         formsData: {},
         formsData1: {
           stype: '',
@@ -280,7 +289,13 @@
           kstar: '',
           kstarval: '',
           dmbtr: '',
-          uuid: ''
+          uuid: '',
+          ticketPrice: '',
+          airportConstuFee: '',
+          fuelSurch: '',
+          otherTaxfee: '',
+          taxrate: '',
+          taxNumber: ''
         },
         formsData2: {
           stypec: '',
@@ -300,7 +315,9 @@
           ulreac: '',
           smemoc: '',
           dmbtrc: '',
-          uuid: ''
+          uuid: '',
+          taxrate: '',
+          taxNumberc: ''
         },
         formsData3: {
           stypeo: '',
@@ -1131,6 +1148,71 @@
         }
       })
     }, */
+    // 计算税率
+    getshui (val) {
+      let _that = this
+      _that.formsData1.taxrate = ''
+      _that.formsData1.taxNumber = ''
+      _that.formsData2.taxrate = ''
+      _that.formsData2.taxNumberc = ''
+      if (val !== '') {
+        if (this.checker === '1') {
+          if (val !== '2051' && _that.burks) {
+            console.log(_that.burks);
+            console.log(val);
+            api.getTaxrate(_that.burks, val, function (res) {
+              console.log(res);
+              if (res.data.code) {
+                _that.shuilvlist = []
+                res.data.data.trafficTaxList.forEach(function (item) {
+                  let obj = {
+                    key: item.taxrate,
+                    value: item.taxrate
+                  }
+                  _that.shuilvlist.push(obj)
+                })
+              }
+            })
+          }
+        }
+        if (this.checker === '2') {
+          if (val === '4001' && _that.burks) {
+            console.log(_that.burks);
+            console.log(val);
+            api.getTaxrate(_that.burks, val, function (res) {
+              console.log(res);
+              if (res.data.code) {
+                _that.shuilvlist = []
+                res.data.data.trafficTaxList.forEach(function (item) {
+                  let obj = {
+                    key: item.taxrate,
+                    value: item.taxrate
+                  }
+                  _that.shuilvlist.push(obj)
+                })
+              }
+            })
+          }
+        }
+      }
+    },
+    // 计算税额
+    getmoney (val) {
+      if (this.checker === '1') {
+        if (Number(this.formsData1.taxrate) === 0) {
+          this.formsData1.taxNumber = val
+        } else {
+          this.formsData1.taxNumber = (val * this.formsData1.taxrate).toFixed(2)
+        }
+      }
+      if (this.checker === '2') {
+        if (Number(this.formsData2.taxrate) === 0) {
+          this.formsData2.taxNumberc = val
+        } else {
+          this.formsData2.taxNumberc = (val * this.formsData2.taxrate).toFixed(2)
+        }
+      }
+    },
     // 获取项目号
     getitemnoInfo() {
       let mtypeClass = ''
@@ -1510,6 +1592,11 @@
     },
     // 校验金额是否超标长途交通
     changeAmount(value) {
+      if (Number(this.formsData1.taxrate) === 0) {
+        this.formsData1.taxNumber = value
+      } else {
+        this.formsData1.taxNumber = (value * this.formsData1.taxrate).toFixed(2)
+      }
       let params = {
         mtype_class: this.mtype_class,
         mtype: this.formsData1.stype,
@@ -1531,6 +1618,11 @@
     },
     // 城市交通
     changeAmountC(value) {
+      if (Number(this.formsData2.taxrate) === 0) {
+        this.formsData2.taxNumberc = value
+      } else {
+        this.formsData2.taxNumberc = (value * this.formsData2.taxrate).toFixed(2)
+      }
       let params = {
         mtype_class: this.mtype,
         mtype: this.formsData2.mtypec,
@@ -1642,25 +1734,36 @@
           whole.showTop('请选择交通类型')
           return;
         }
-        if (this.formsData1.sdate.length === 0) {
-          whole.showTop('请选择出发日期')
-          return;
-        }
-        if (this.formsData1.edate.length === 0) {
-          whole.showTop('请选择到达日期')
-          return;
-        } else {
-          if ((this.formsData1.sdate).getTime() < (this.formsData1.edate).getTime()) {
-            whole.showTop('到达日期不能小于结束日期')
-            return;
-          }
-        }
         if (this.formsData1.saddr === '') {
           whole.showTop('请选择出发地点')
           return;
         }
         if (this.formsData1.eaddr === '') {
           whole.showTop('请选择到达地点')
+          return;
+        }
+        if (this.formsData1.ticketPrice === '') {
+          whole.showTop('请填写票价')
+          return;
+        }
+        if (this.formsData1.airportConstuFee === '') {
+          whole.showTop('请填写机场建设费')
+          return;
+        }
+        if (this.formsData1.fuelSurch === '') {
+          whole.showTop('请填写燃油附加费')
+          return;
+        }
+        if (this.formsData1.otherTaxfee === '') {
+          whole.showTop('请填写其他税费')
+          return;
+        }
+        if (this.formsData1.taxrate === '') {
+          whole.showTop('请选择税率')
+          return;
+        }
+        if (this.amount === '' && this.formsData1.dmbtr === '') {
+          whole.showTop('请填写总金额')
           return;
         }
         if (this.formsData1.waers !== 'CNY') {
@@ -1691,6 +1794,19 @@
           whole.showTop('请填写说明')
           return;
         }
+        // if (this.formsData1.sdate.length === 0) {
+        //   whole.showTop('请选择出发日期')
+        //   return;
+        // }
+        // if (this.formsData1.edate.length === 0) {
+        //   whole.showTop('请选择到达日期')
+        //   return;
+        // } else {
+        //   if ((this.formsData1.sdate).getTime() < (this.formsData1.edate).getTime()) {
+        //     whole.showTop('到达日期不能小于结束日期')
+        //     return;
+        //   }
+        // }
         if (this.currencyFlag === '0') {
           this.formsData1.wrbtr = this.formsData1.dmbtr
         }
@@ -1704,6 +1820,12 @@
           saddr: this.formsData1.saddr,
           eaddr: this.formsData1.eaddr,
           waers: this.formsData1.waers,
+          ticketPrice: this.formsData1.ticketPrice,
+          airportConstuFee: this.formsData1.airportConstuFee,
+          taxrate: this.formsData1.taxrate,
+          taxNumber: this.formsData1.taxNumber,
+          fuelSurch: this.formsData1.fuelSurch,
+          otherTaxfee: this.formsData1.otherTaxfee,
           wrbtr: this.formsData1.wrbtr || 0,
           kursf: this.formsData1.kursf,
           conam: conam,
@@ -1731,7 +1853,6 @@
             ulfee: this.ulfee,
             agree: this.flag
         }
-       // console.log(ltrad)
         this.$store.dispatch('addPersonReim', formsData)
         console.log('保存')
       //  this.$router.go(-1)
@@ -1767,6 +1888,14 @@
             return;
           }
         }
+        if (this.formsData2.taxrate === '') {
+          whole.showTop('请选择税率')
+          return;
+        }
+        if (this.amount2 === '' && this.formsData2.dmbtrc === '') {
+          whole.showTop('请填写总金额')
+          return;
+        }
         if (this.formsData2.waersc === '') {
           whole.showTop('请选择交通币种')
           return;
@@ -1801,6 +1930,8 @@
           saddrc: this.formsData2.saddrc,
           eaddrc: this.formsData2.eaddrc,
           waersc: this.formsData2.waersc,
+          taxrate: this.formsData2.taxrate,
+          taxNumberc: this.formsData2.taxNumberc,
           wrbtrc: this.formsData2.wrbtrc || 0,
           kursfc: this.formsData2.kursfc,
           conamc: conamc,
@@ -2309,7 +2440,7 @@
   }
 
   .footerButton {
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;*/
     text-align: center;
   }
 </style>

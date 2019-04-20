@@ -4,7 +4,7 @@
  */
 const baseConfig = {
   // baseURL: 'http://10.5.1.253:10023'// 10066
-  baseURL: 'http://10.5.1.253:10066'// 10066
+  baseURL: 'http://10.5.1.253:10066'// 10066 测试机
   // baseURL: 'https://dingtalk.gmkholdings.com'
   // baseURL: 'https://dingtalk.gmkholdings.com:8080'
 }
