@@ -36,6 +36,10 @@ const W3_CONCAT_DDID = '095117221320233106' // 明月的ddid
 const W3_YUNWEI_DDID = '131164676026354846' // 炳冉的ddid
 const JH_CONCAT_DDID = 'manager9648' // 京华世家任小冰的ddid
 
+const GMK_001 = '126800011724548535'  //  测试 ddid
+const GMK_002 = '1305222652955694'  //  测试 ddid
+const GMK_003 = '134655361838191494'  //  测试 ddid
+
 const JH_DINGTALK_CODE = 'APPSERVER-JH' // 京华世家dingtalk_code
 const SHYS_DINGTALK_CODE = 'APPSERVER-YS' // 上海聿晟dingtalk_code
 
@@ -225,6 +229,9 @@ export default {
   GMK_YF,   // 俞芳
   GMK_GZC,   // 郭宗春
   GMK_ZYL, // 赵彦玲
+  GMK_001, // 赵彦玲
+  GMK_002, // 赵彦玲
+  GMK_003, // 赵彦玲
   W3_CONCAT_DDID,  //  明月
   W3_YUNWEI_DDID, //  炳冉
   JH_CONCAT_DDID,
